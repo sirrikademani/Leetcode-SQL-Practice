@@ -34,6 +34,7 @@ The first order of a customer is the order with the earliest order date that the
 
 Write a solution to find the percentage of immediate orders in the first orders of all customers, rounded to 2 decimal places.*/
 
+# Write your MySQL query statement below
 with first_orders as(
 select customer_id,min(order_date) as first_order
 from Delivery
@@ -52,5 +53,5 @@ and d.customer_id=f.customer_id
 )
 
 select 
-sum(case when delivery_type='immediate' then 1 else 0 end)/count(delivery_id)*100 as immediate_percentage
+round(sum(case when delivery_type='immediate' then 1 else 0 end)/count(delivery_id)*100,2) as immediate_percentage
 from cte;
