@@ -56,8 +56,8 @@ select
 round(sum(case when delivery_type='immediate' then 1 else 0 end)/count(delivery_id)*100,2) as immediate_percentage
 from cte;
 
-/* 4. 550. Game Play Analysis IV
-Solved
+--4. 550. Game Play Analysis IV
+/* Solved
 Medium
 Topics
 premium lock icon
