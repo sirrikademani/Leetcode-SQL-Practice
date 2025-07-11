@@ -57,14 +57,7 @@ round(sum(case when delivery_type='immediate' then 1 else 0 end)/count(delivery_
 from cte;
 
 --4. 550. Game Play Analysis IV
-/* Solved
-Medium
-Topics
-premium lock icon
-Companies
-SQL Schema
-Pandas Schema
-Table: Activity
+/* Table: Activity
 
 +--------------+---------+
 | Column Name  | Type    |
@@ -89,5 +82,29 @@ where (player_id,date_sub(event_date, INTERVAL 1 day))
 in (select player_id, min(event_date) as first_login
 from activity group by player_id);
 
+--5. 2356. Number of Unique Subjects Taught by Each Teacher
 
+Table: Teacher
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| teacher_id  | int  |
+| subject_id  | int  |
+| dept_id     | int  |
++-------------+------+
+(subject_id, dept_id) is the primary key (combinations of columns with unique values) of this table.
+Each row in this table indicates that the teacher with teacher_id teaches the subject subject_id in the department dept_id.
+ 
+
+Write a solution to calculate the number of unique subjects each teacher teaches in the university.
+
+Return the result table in any order.
+
+The result format is shown in the following example. */
+select
+teacher_id, count(distinct subject_id) as cnt
+from Teacher
+group by 1;
+ 
 
