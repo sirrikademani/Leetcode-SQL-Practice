@@ -65,3 +65,41 @@ join Employee e
 on p.employee_id=e.employee_id
 group by 1;
 
+--7.https://leetcode.com/problems/market-analysis-i/description/
+select u.user_id as buyer_id, u.join_date, count(o.order_id) as orders_in_2019
+from Users u
+left join Orders o
+on o.buyer_id = u.user_id and year(order_date)='2019'
+group by user_id;
+
+--8. https://leetcode.com/problems/swap-salary/description/
+update salary set sex=
+case when sex='m' then 'f'
+    when sex='f' then 'm' end 
+;
+
+--9. https://leetcode.com/problems/monthly-transactions-i/description/
+select 
+date_format(trans_date,'%Y-%m') as `month`,
+country,
+count(distinct id) as trans_count,
+count(distinct case when state='Approved' then id else null end) as approved_count,
+sum(amount) as trans_total_amount,
+sum(case when state='Approved' then amount else 0 end) as approved_total_amount
+from Transactions 
+group by 1,2
+order by 1;
+
+--10.https://leetcode.com/problems/last-person-to-fit-in-the-bus/description/
+with cte as(
+    select 
+    person_name,
+    turn,
+    sum(weight) over (order by turn ) as weight_sum
+    from Queue)
+
+select person_name
+from cte where
+weight_sum<=1000
+order by turn desc limit 1
+;
