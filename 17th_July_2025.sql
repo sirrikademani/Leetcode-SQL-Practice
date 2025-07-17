@@ -95,3 +95,16 @@ round(avg(end_time-start_time),3) as processing_time
 from cte
 group by 1
 order by 2 desc;
+
+--6.https://leetcode.com/problems/fix-names-in-a-table/
+select user_id,
+concat(
+    upper(
+        substr(name,1,1)
+    ),
+    lower(
+        substr(name,2)
+    )
+) as name
+from users
+order by 1;
