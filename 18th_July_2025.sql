@@ -109,3 +109,12 @@ from
 transactions
 group by 1 
 order by 1;
+
+--7.https://datalemur.com/questions/matching-skills
+with cte as(SELECT candidate_id,
+count(skill) as skills
+FROM candidates
+WHERE skill IN ('Python', 'Tableau', 'PostgreSQL')
+group by 1)
+
+select candidate_id from cte where skills=3;
