@@ -21,4 +21,15 @@ group by 1,2 having count(distinct i1.user_id)>=3
 order by 3 desc,1 asc,2 asc;
 
 
+select lb.book_id,
+lb.title,
+lb.author,
+lb.genre,
+lb.publication_year,
+count(lb.record_id) as current_borrowers
+from cte lb
+where total_copies=0
+group by 1,2,3,4,5
+order by count(lb.record_id) desc,title asc
+
 
