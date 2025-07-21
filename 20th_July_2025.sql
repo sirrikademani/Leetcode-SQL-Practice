@@ -37,3 +37,36 @@ where user_id in (
     where activity_type='paid'
 )
 group by user_id;
+
+--5.https://datalemur.com/questions/sql-histogram-tweets
+--Method 1:
+with cte as (SELECT *,
+row_number() over (partition by user_id order by count(distinct tweet_id) ) as tweet_bucket
+FROM tweets
+where year(tweet_date)=2022
+group by tweet_id,	user_id,	msg,	tweet_date)
+
+,cte1 as (SELECT
+user_id,
+max(tweet_bucket) as tweet_bucket
+from cte 
+group by 1)
+
+select tweet_bucket,
+count(distinct user_id) as USER_num
+from cte1
+ group by 1
+;
+
+--method 2:
+select 
+cnt as tweet_bucket,
+count(user_id) as user_num
+from(
+SELECT
+user_id,
+count(tweet_id) as cnt 
+from tweets
+where year(tweet_date)=2022
+group by 1) as TEMP_table
+group by 1;
