@@ -51,3 +51,32 @@ group_concat(next order by id separator '') as converted_text from temp4
 group by content_id
 ;
 
+--3. https://leetcode.com/problems/find-students-who-improved/description/
+with ranked_Score as (
+select
+*,
+row_number() over (partition by student_id,subject order by exam_date asc) as rn_Asc,
+row_number() over (partition by student_id,subject order by exam_date desc) as rn_desc
+from Scores
+)
+
+,first_exam_Score as (
+select student_id,subject,score,exam_date from
+ranked_score where rn_asc=1)
+
+,latest_exam_score as(
+    select student_id,subject,score, exam_date from ranked_score
+    where rn_desc=1
+)
+
+select
+f.student_id,
+f.subject,
+f.score as first_score,
+l.score as latest_score
+from first_exam_score f
+join latest_exam_score l
+on f.student_id=l.student_id
+and f.subject=l.subject
+and f.score<l.score
+;
