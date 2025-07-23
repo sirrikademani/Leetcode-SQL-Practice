@@ -15,4 +15,21 @@ using(book_id)
 where total_copies-borrowed_count=0
 order by borrowed_count desc, title;
 
---2.
+--2.https://leetcode.com/problems/find-overbooked-employees/description/
+ with cte as (select 
+ employee_id,
+ yearweek(meeting_date,3) as weeks,
+ sum(duration_hours) as meeting_hrs
+ from meetings
+ group by employee_id,weeks )
+ 
+,cte1 as (select *,count(*) as meeting_heavy_weeks from cte
+where meeting_hrs>20
+group by employee_id having count(*)>=2)
+
+select e.employee_id,e.employee_name, department, meeting_heavy_weeks
+from cte1 c left join
+employees e
+using (employee_id)
+order by meeting_heavy_weeks desc, e.employee_name
+
