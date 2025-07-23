@@ -4,7 +4,7 @@ https://docs.google.com/spreadsheets/d/1245OEIr4DJO-J7cYjbGvJcbZ8-W51A5vkZC7aPpz
 
 Committed to solve atleast 5 SQL questions everyday !
 
-### 1. Learnt on 23rd July 2025: USING clause
+### 1. USING clause
 	The USING clause in SQL is a shorthand way to join tables when the column names used for the join are identical in both tables. Let me explain its function and benefits:
 		1. Purpose: USING simplifies the JOIN syntax when the joining columns have the same name in both tables.
 		2. How it works:
