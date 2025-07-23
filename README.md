@@ -4,7 +4,7 @@ https://docs.google.com/spreadsheets/d/1245OEIr4DJO-J7cYjbGvJcbZ8-W51A5vkZC7aPpz
 
 Committed to solve atleast 5 SQL questions everyday !
 
-## Learnt on 23rd July 2025: USING clause
+### 1. Learnt on 23rd July 2025: USING clause
 	The USING clause in SQL is a shorthand way to join tables when the column names used for the join are identical in both tables. Let me explain its function and benefits:
 		1. Purpose: USING simplifies the JOIN syntax when the joining columns have the same name in both tables.
 		2. How it works:
@@ -38,3 +38,39 @@ group by book_id) br
 using(book_id)
 where total_copies-borrowed_count=0
 order by borrowed_count desc, title;
+
+### 2.YEARWEEK(date, 3)
+YEARWEEK(date, 3) in MySQL returns a number in the format YYYYWW where:
+
+YYYY is the year
+WW is the week number (01-53)
+The mode parameter "3" is particularly important:
+
+It means weeks start on Monday
+Week 1 is the first week with 4 or more days in the new year
+Examples:
+-- For date '2024-01-01' (Monday)
+YEARWEEK('2024-01-01', 3) returns 202401
+
+-- For date '2024-12-31' (Tuesday)
+YEARWEEK('2024-12-31', 3) returns 202453
+
+The different mode values (0-7) control:
+
+When the week starts (Sunday or Monday)
+How to determine week 1 of the year (first days or first complete week)
+Mode 3 is commonly used because it follows the ISO-8601 standard where:
+
+Weeks start on Monday
+Week 1 is the week with January 4th
+This might mean December 29-31 belong to week 1 of next year
+Or early January dates might belong to week 52/53 of previous year
+This function is useful for:
+
+Grouping data by week
+Financial reporting
+Week-over-week comparisons
+
+
+
+
