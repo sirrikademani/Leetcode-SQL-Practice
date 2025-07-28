@@ -11,3 +11,11 @@ SELECT part,
 assembly_step
 FROM parts_assembly
 where finish_date is null ;
+
+--3.https://datalemur.com/questions/sql-third-transaction
+with cte as (SELECT *,
+row_number() over (partition by user_id order by transaction_date asc ) as third_transaction_no
+FROM transactions)
+
+select user_id,spend,transaction_date
+from cte where third_transaction_no=3 ;
