@@ -71,6 +71,5 @@ Grouping data by week
 Financial reporting
 Week-over-week comparisons
 
-
-
-
+###3. Rolling avg tweets for 3 days calc
+avg(tweet_count) over (partition by user_id order by tweet_date rows between 2 PRECEDING and CURRENT row)
