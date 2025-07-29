@@ -29,3 +29,16 @@ round(avg(tweet_count) over (partition by user_id order by tweet_date rows betwe
 as rolling_avg_3rd
 from tweets
 ;
+
+--4. https://datalemur.com/questions/sql-average-post-hiatus-1
+with cte as (SELECT user_id,
+min(post_date) as min_dt,
+max(post_Date) as max_dt
+FROM posts
+where EXTRACT(YEAR from post_date)=2021
+group by 1 having count(post_id)>=2)
+
+select user_id,
+(max_dt::date-min_dt::date) as days_between
+from cte 
+;
