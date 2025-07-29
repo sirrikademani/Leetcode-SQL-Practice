@@ -42,3 +42,20 @@ select user_id,
 (max_dt::date-min_dt::date) as days_between
 from cte 
 ;
+
+--5.https://datalemur.com/questions/user-retention
+select 
+extract(month from cm.event_date) as "month"
+,count(distinct cm.user_id) as monthly_active_users
+from user_actions cm
+where exists (
+select pm.user_id
+from user_actions pm
+where
+pm.user_id=cm.user_id and 
+extract(month from pm.event_date)=extract(month from cm.event_date - interval '1 month')
+) 
+and extract(month from cm.event_date)=7
+and extract(year from cm.event_date)=2022 
+group by 1
+;
