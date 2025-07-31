@@ -51,6 +51,7 @@ corrected_order_id, item
 from cte order by corrected_order_id;
 
 --5.https://datalemur.com/questions/sql-bloomberg-stock-min-max-1
+--Method 1 using min() and max() functions
 with high as (
 select ticker,
 to_char(date,'Mon-YYYY') as highest_mth,
@@ -67,6 +68,37 @@ min(open) as lowest_open,
 row_number() over (partition by ticker order by open asc ) as rn 
 from stock_prices
 group by 1,2,open
+)
+
+select h.ticker,
+highest_mth,
+highest_open,
+lowest_mth,
+lowest_open
+from high h 
+join low l 
+on h.ticker=l.ticker
+and h.rn=1 
+and l.rn=1
+;
+
+--Method2: without min() or max()
+with high as (
+select ticker,
+to_char(date,'Mon-YYYY') as highest_mth,
+open as highest_open,
+row_number() over (partition by ticker order by open desc ) as rn 
+from stock_prices
+
+)
+
+, low as (
+select ticker,
+to_char(date,'Mon-YYYY') as lowest_mth,
+open as lowest_open,
+row_number() over (partition by ticker order by open asc ) as rn 
+from stock_prices
+
 )
 
 select h.ticker,
