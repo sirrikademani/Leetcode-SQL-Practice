@@ -73,3 +73,46 @@ Week-over-week comparisons
 
 ### 3. Rolling avg tweets for 3 days calc
 avg(tweet_count) over (partition by user_id order by tweet_date rows between 2 PRECEDING and CURRENT row)
+
+### 4. Difference between ROW_NUMBER() and RANK() function
+With RANK():
+The current query assigns the same rank to transactions that occur on the same date for a given user. This means if a user made multiple purchases on their most recent transaction date, all those purchases would have rank 1 and be included in the final result.
+If ROW_NUMBER() was used:
+It would assign a unique number to each transaction, even if they occurred on the same date. Only one transaction per user (the one arbitrarily chosen as "first" among those with the same latest date) would be selected.
+
+Data:
+user_id | product_id | transaction_date | spend
+1       | A          | 2023-04-01       | 100
+1       | B          | 2023-04-01       | 150
+2       | C          | 2023-04-02       | 200
+2       | D          | 2023-04-01       | 100
+  
+With RANK():
+user_id | product_id | transaction_date | spend | rn
+1       | A          | 2023-04-01       | 100   | 1
+1       | B          | 2023-04-01       | 150   | 1
+2       | C          | 2023-04-02       | 200   | 1
+2       | D          | 2023-04-01       | 100   | 2
+
+Result:
+transaction_date | user_id | purchase_count
+2023-04-01       | 1       | 2
+2023-04-02       | 2       | 1
+    
+With ROW_NUMBER(): 
+user_id | product_id | transaction_date | spend | rn
+1       | A          | 2023-04-01       | 100   | 1
+1       | B          | 2023-04-01       | 150   | 2
+2       | C          | 2023-04-02       | 200   | 1
+2       | D          | 2023-04-01       | 100   | 2
+
+Result:
+transaction_date | user_id | purchase_count
+2023-04-01       | 1       | 1
+2023-04-02       | 2       | 1
+
+Key Difference:
+RANK() will include all products purchased on the most recent day for each user, potentially showing multiple purchases per user on their latest transaction date.
+ROW_NUMBER() would arbitrarily select one product from the most recent day for each user, always showing only one purchase per user.
+
+
