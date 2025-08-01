@@ -111,6 +111,24 @@ transaction_date | user_id | purchase_count
 2023-04-01       | 1       | 1
 2023-04-02       | 2       | 1
 
+### 5. floor(500000/prime_sq_ft)*prime_sq_ft) - Data Lemur :Maximize prime item inventory question- https://datalemur.com/questions/prime-warehouse-storage
+Used to find Loss in the calculation:
+This is often used when you want to:
+- Calculate the maximum whole units possible within a budget
+- Ensure you don't exceed a certain limit
+- Get a conservative estimate that's slightly under the target number
+
+USE OF FLOOR:
+total_sqft = 800
+500000/800 = 625
+FLOOR(625) = 625
+625 * 800 = 500,000 (In this case it matches because division is even)
+
+total_sqft = 1600
+500000/1600 = 312.5
+FLOOR(312.5) = 312
+312 * 1600 = 499,200
+
 Key Difference:
 RANK() will include all products purchased on the most recent day for each user, potentially showing multiple purchases per user on their latest transaction date.
 ROW_NUMBER() would arbitrarily select one product from the most recent day for each user, always showing only one purchase per user.
