@@ -29,7 +29,7 @@ select distinct user_id from cte where prev_day is not NULL
 and prevprev_day is not null 
 ;
 
---3. 
+--3. https://datalemur.com/questions/histogram-users-purchases
 /* 
 With RANK():
 The current query assigns the same rank to transactions that occur on the same date for a given user. This means if a user made multiple purchases on their most recent transaction date, all those purchases would have rank 1 and be included in the final result.
@@ -71,3 +71,20 @@ Key Difference:
 RANK() will include all products purchased on the most recent day for each user, potentially showing multiple purchases per user on their latest transaction date.
 ROW_NUMBER() would arbitrarily select one product from the most recent day for each user, always showing only one purchase per user.
 */
+with recent_transactions as (
+SELECT product_id,
+user_id,
+spend,
+transaction_date,
+rank() over (partition by user_id order by transaction_date desc) as rn 
+FROM user_transactions)
+
+select 
+transaction_date,
+user_id, 
+count(product_id) as purchase_count 
+from  recent_transactions
+where rn=1
+group by transaction_date, user_id
+order by transaction_date
+;
