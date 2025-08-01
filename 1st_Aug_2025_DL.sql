@@ -88,3 +88,73 @@ where rn=1
 group by transaction_date, user_id
 order by transaction_date
 ;
+
+--4.https://datalemur.com/questions/alibaba-compressed-mode
+--Method 1:
+with cte as (SELECT 
+ item_count,order_occurrences,
+rank() over (order by order_occurrences desc) as rn 
+FROM items_per_order
+order by order_occurrences desc
+)
+select distinct item_count from cte where rn=1
+;
+
+--Method2:
+SELECT distinct item_count from items_per_order
+where order_occurrences = (select 
+max(order_occurrences)
+FROM items_per_order) 
+;
+
+--Method3:
+select distinct item_count from 
+items_per_order
+where order_occurrences=(
+SELECT mode() within group (order by order_occurrences desc ) as order_occurrences
+from items_per_order
+)
+order by item_count 
+;
+
+--5.https://datalemur.com/questions/prime-warehouse-storage
+/*floor(500000/prime_sq_ft)*prime_sq_ft)
+Used to find Loss in the calculation:
+This is often used when you want to:
+- Calculate the maximum whole units possible within a budget
+- Ensure you don't exceed a certain limit
+- Get a conservative estimate that's slightly under the target number
+
+USE OF FLOOR:
+total_sqft = 800
+500000/800 = 625
+FLOOR(625) = 625
+625 * 800 = 500,000 (In this case it matches because division is even)
+
+total_sqft = 1600
+500000/1600 = 312.5
+FLOOR(312.5) = 312
+312 * 1600 = 499,200
+*/
+
+with cte as (
+select 
+sum(case when item_type='prime_eligible' then 1 else 0 end) as total_prime_item,
+sum(case when item_type='not_prime' then 1 else 0 end) as total_non_prime_item,
+sum(case when item_type='prime_eligible' then square_footage else 0 end) as prime_sq_ft,
+sum(case when item_type='not_prime' then square_footage else 0 end) as non_prime_sq_ft
+from inventory
+)
+
+--floor is used to remove decimals and return rounded integers
+--floor(500000/prime_sq_ft) would give-> sqft required for per prime item out of total 500,000 sqft
+--floor(500000/prime_sq_ft)*total_prime_items --> total square feet occupied by prime items out of 500k Sqft 
+select 
+'prime_eligible' as item_type
+,floor(500000/prime_sq_ft)*total_prime_item as item_count
+ from cte 
+UNION ALL 
+select 
+'not_prime' as item_type
+,floor((500000 - floor(500000/prime_sq_ft)*prime_sq_ft)/non_prime_sq_ft)*total_non_prime_item as item_count
+ from cte ;
